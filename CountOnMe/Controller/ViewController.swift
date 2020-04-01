@@ -12,23 +12,28 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
-      private var brain = Brain()
+    private var brain = Brain()
     
     var elements: [String] {
-        return textView.text.split(separator: " ").map { "\($0)" }
+        if brain.numberDisplay.isEmpty == true {
+            return brain.stringExpression
+        }
+        return []
     }
     
     // Error check computed variables
-    var expressionIsCorrect: Bool {
-        return elements.last != "+" && elements.last != "-"
-    }
+
+    //Redondant, on peut l'enlever.
+    //    var expressionIsCorrect: Bool {
+    //        return elements.last != "+" && elements.last != "-" && elements.last != "/" && elements.last != "*"
+    //    }
     
     var expressionHaveEnoughElement: Bool {
         return elements.count >= 3
     }
     
     var canAddOperator: Bool {
-        return elements.last != "+" && elements.last != "-"
+        return elements.last != "+" && elements.last != "-" && elements.last != "/" && elements.last != "*"
     }
     
     var expressionHaveResult: Bool {
@@ -45,52 +50,64 @@ class ViewController: UIViewController {
     // View actions
     @IBAction func tappedNumberButton(_ sender: UIButton) {
         guard let numberText = sender.title(for: .normal) else {
-             return
-         }
-         if brain.calculateFinished {
-             // Clear the display and add numberDisplay.last value
-             brain.addNewNumber(newNumber: numberText)
-             textView.text = brain.numberDisplay.last
-         } else {
-             brain.addNewNumber(newNumber: numberText)
-             textView.text.append(numberText)
-         }
+            return
+        }
+        if brain.calculateFinished {
+            // Clear the display and add numberDisplay.last value to textView
+            brain.addNewNumber(newNumber: numberText)
+            textView.text = brain.numberDisplay
+        } else {
+            brain.addNewNumber(newNumber: numberText)
+            textView.text.append(numberText)
+        }
     }
     
     @IBAction func tappedAdditionButton(_ sender: UIButton) {
-        brain.addPlusOperator()
-         //Todo: if check is ok then:
-        textView.text.append("+")
-//        if canAddOperator {
-//            textView.text.append(" + ")
-//        } else {
-//            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
-//            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-//            self.present(alertVC, animated: true, completion: nil)
-//        }
+
+        if canAddOperator {
+            brain.addPlusOperator()
+            textView.text.append("+")
+        } else {
+            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
+            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            self.present(alertVC, animated: true, completion: nil)
+        }
     }
     
     @IBAction func tappedSubstractionButton(_ sender: UIButton) {
-        brain.addPlusOperator()
-          //Todo: if check is ok then:
-         textView.text.append("-")
-//        if canAddOperator {
-//            textView.text.append(" - ")
-//        } else {
-//            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
-//            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-//            self.present(alertVC, animated: true, completion: nil)
-//        }
+
+        if canAddOperator {
+            brain.addMinusOperator()
+            textView.text.append("-")
+        } else {
+            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
+            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            self.present(alertVC, animated: true, completion: nil)
+        }
     }
 
     @IBAction func tappedDivideButton(_ sender: UIButton) {
-        brain.addDivideOperator()
-         textView.text.append(":")
+
+        if canAddOperator {
+            brain.addDivideOperator()
+            textView.text.append(":")
+        } else {
+            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
+            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            self.present(alertVC, animated: true, completion: nil)
+        }
     }
 
     @IBAction func tappedMultiplierButton(_ sender: UIButton) {
-        brain.addMultiplierOperator()
-        textView.text.append("x")
+
+        if canAddOperator {
+            brain.addMultiplierOperator()
+            textView.text.append("x")
+        } else {
+            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
+            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            self.present(alertVC, animated: true, completion: nil)
+        }
     }
 
 
@@ -98,22 +115,29 @@ class ViewController: UIViewController {
 
 
     @IBAction func tappedEqualButton(_ sender: UIButton) {
-        brain.calculate()
-        textView.text = brain.resultExpression
+
         //Todo: check error
 
-//        guard expressionIsCorrect else {
-//            let alertVC = UIAlertController(title: "Zéro!", message: "Entrez une expression correcte !", preferredStyle: .alert)
-//            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-//            return self.present(alertVC, animated: true, completion: nil)
-//        }
-//
-//        guard expressionHaveEnoughElement else {
-//            let alertVC = UIAlertController(title: "Zéro!", message: "Démarrez un nouveau calcul !", preferredStyle: .alert)
-//            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-//            return self.present(alertVC, animated: true, completion: nil)
-//        }
+        //        guard expressionIsCorrect else {
+        //            let alertVC = UIAlertController(title: "Zéro!", message: "Entrez une expression correcte !", preferredStyle: .alert)
+        //            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        //            return self.present(alertVC, animated: true, completion: nil)
+        //        }
+        brain.calculate()
+        textView.text = brain.finalResult
+
+        //
+        //        guard expressionHaveEnoughElement else {
+        //            let alertVC = UIAlertController(title: "Zéro!", message: "Démarrez un nouveau calcul !", preferredStyle: .alert)
+        //            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        //            return self.present(alertVC, animated: true, completion: nil)
+        //        }
     }
 
+    @IBAction func tappedClearButton(_ sender: UIButton) {
+        brain.clear()
+        textView.text = ""
+    }
+    
 }
 

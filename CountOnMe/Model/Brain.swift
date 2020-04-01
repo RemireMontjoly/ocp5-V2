@@ -11,73 +11,61 @@ import Foundation
 class Brain {
 
     var calculateFinished = true
-    var resultExpression = ""
+    var finalResult = ""
     var stringExpression = [String]()
-    var numberDisplay = [""]
+    var numberDisplay = ""
 
     func addNewNumber(newNumber: String) {
-        // calculateFinished = false
+        calculateFinished = false
+        numberDisplay += newNumber
 
-        if var stringMutable = numberDisplay.last {
-            stringMutable += newNumber
-            numberDisplay = [stringMutable]
-            print("Add number: \(numberDisplay)")
-        }
+        print("numberDisplay = \(numberDisplay)")
+        print("stringExpression after addNewNumber tapped = \(stringExpression)")
     }
+
     func addPlusOperator() {
         //Todo: check error
 
-        //        if stringExpression.last == "+" || stringExpression.last == "-" || stringExpression.last == "/" || stringExpression.last == "*" {
-        //            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
-        //            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        //            self.present(alertVC, animated: true, completion: nil)
-        //        }
-        stringExpression += numberDisplay
-        stringExpression.append("+")
-        numberDisplay = [""]
-        calculateFinished = false
-        print("String Expression: \(stringExpression)")
-
+        appending(op: "+")
+        print("stringExpression after + tapped = \(stringExpression)")
     }
+
     func addMinusOperator() {
-        //Todo: check error
 
-        stringExpression += numberDisplay
-        stringExpression.append("-")
-        numberDisplay = [""]
-        calculateFinished = false
-        print(stringExpression)
+        appending(op:"-")
+        print("stringExpression after - tapped = \(stringExpression)")
+
     }
+
     func addDivideOperator() {
-        //Todo: check error
 
-        stringExpression += numberDisplay
-        stringExpression.append("/")
-        numberDisplay = [""]
-        calculateFinished = false
-        print(stringExpression)
+        appending(op: "/")
+        print("stringExpression after / tapped = \(stringExpression)")
     }
-    func addMultiplierOperator() {
-        //Todo: check error
 
-        stringExpression += numberDisplay
-        stringExpression.append("*")
-        numberDisplay = [""]
-        calculateFinished = false
-        print(stringExpression)
+    func addMultiplierOperator() {
+
+        appending(op: "*")
+        print("stringExpression after * tapped = \(stringExpression)")
+    }
+
+    func appending(op: String) {
+        stringExpression.append(numberDisplay)
+        stringExpression.append(op)
+        numberDisplay = ""
     }
 
     func calculate() {
-        stringExpression += numberDisplay
-        numberDisplay = [""]
-        print(stringExpression)
+        stringExpression.append(numberDisplay)
+        numberDisplay = ""
+        print("stringExpression after = tapped : \(stringExpression)")
 
+        // This loop iterates over stringExpression-array while a / or * operand still here
         for (i,oprator) in stringExpression.enumerated() {
             if oprator == "/" || oprator == "*" {
 
                 let leftIndex = i - 1
                 let rightIndex = i + 1
-
                 print("leftIndex = \(leftIndex)")
                 print("RightIndex = \(rightIndex)")
 
@@ -85,8 +73,8 @@ class Brain {
                 let operand = stringExpression[i]
                 let right = Int(stringExpression[rightIndex])!
 
-                print("left = \(left)")
-                print("right = \(right)")
+                print("left number = \(left)")
+                print("right number = \(right)")
                 print("operand = \(operand)")
 
                 let result: Int
@@ -96,14 +84,45 @@ class Brain {
                 default: fatalError("Unknown operator !")
 
                 }
-                stringExpression = Array(stringExpression.dropFirst(2))
-                 stringExpression[0] = String(result)
-
-
-                print("The result = \(result)")
-                print(stringExpression)
+                stringExpression[i+1] = "\(result)"
+                stringExpression[i] = ""
+                stringExpression[i-1] = ""
             }
-
         }
+        print("stringExpression = \(stringExpression)")
+        stringExpression.removeAll(where: { $0 == "" })
+
+        // This loop iterates over stringExpression-array while a + or - operand still here
+        while stringExpression.count > 1 {
+
+            let left = Int(stringExpression[0])!
+            let operand = stringExpression[1]
+            let right = Int(stringExpression[2])!
+
+            let result: Int
+
+            switch operand {
+            case "+": result = left + right
+            case "-": result = left - right
+            default: fatalError("Unknown operator !")
+            }
+            stringExpression = Array(stringExpression.dropFirst(3))
+            stringExpression.insert("\(result)", at: 0)
+        }
+
+        finalResult = stringExpression[0]
+        clear()
+
+        print("finalResult = \(finalResult)")
+        print("calculatFinished = \(calculateFinished)")
+        print("numberDisplay = \(numberDisplay)")
+        print("Final stringExpression = \(stringExpression)")
     }
+
+    func clear() {
+        stringExpression = [String]()
+        calculateFinished = true
+        numberDisplay = ""
+    }
+    // End of class:
 }
