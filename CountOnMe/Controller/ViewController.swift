@@ -39,9 +39,9 @@ class ViewController: UIViewController {
     }
 
     // Inutilisé, on peut l'enlever.Cela servait dans le projet de base a clear le display si un calcul a été effectué (expression complète avec le = ).
-//    var expressionHaveResult: Bool {
-//        return textView.text.firstIndex(of: "=") != nil
-//    }
+    //    var expressionHaveResult: Bool {
+    //        return textView.text.firstIndex(of: "=") != nil
+    //    }
     
     // View Life cycles
     override func viewDidLoad() {
@@ -126,8 +126,13 @@ class ViewController: UIViewController {
             alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             return self.present(alertVC, animated: true, completion: nil)
         }
-        brain.calculate()
-        textView.text = brain.finalResult
+        
+        let divideBy0 = brain.calculate()
+        if divideBy0 {
+            textView.text = "Error"
+        } else {
+            textView.text = brain.finalResult
+        }
     }
     
     @IBAction func tappedClearButton(_ sender: UIButton) {
