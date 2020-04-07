@@ -8,75 +8,99 @@
 
 import Foundation
 
+enum ErrorCases: Error {
+    case zeroDivisor
+    case cannotAddOperator
+    case expressionIncorrect
+    case notEnoughElements
+}
+
 class Brain {
 
-    var firstCalculation = true // Pour afficher une erreur si on tape un opérateur sur l'écran d'accueil (1+2=3)Est-ce utile???
-    var calculateFinished = true
     var finalResult = "0"
-    var stringExpression = [""]//Plutot que = [String](). Car ça permet de ne pas avoir nil et de toute façon le "" est effacé par stringExpression.removeAll(where: { $0 == "" }) dans func calculate
-    var numberDisplay = ""
+    var stringExpression = [String]()
+    var calculateFinished = true
+
+    //  Error check computed variables
+    var canAddOperator: Bool {
+        return stringExpression.last != " + " && stringExpression.last != " - " && stringExpression.last != " / " && stringExpression.last != " * "
+    }
+
+    var expressionIsCorrect: Bool {
+        return stringExpression.last != " + " && stringExpression.last != " - " && stringExpression.last != " / " && stringExpression.last != " * "
+    }
+
+    var expressionHaveEnoughElement: Bool {
+        return stringExpression.count >= 3
+    }
 
     func addNewNumber(newNumber: String) {
-        firstCalculation = false
         calculateFinished = false
-        numberDisplay += newNumber
+        stringExpression.append(newNumber)
+        print("stringExpression after addNewNumber = \(stringExpression)")
     }
 
-    func addPlusOperator() {
-        appending(op: "+")
+    func addPlusOperator() throws {
+        try appendingOperator(ope: " + ")
+        print("StringExpression after add button tapped without error = \(stringExpression)")
     }
 
-    func addMinusOperator() {
-        appending(op:"-")
+    func addMinusOperator() throws {
+        try appendingOperator(ope: " - ")
+        print("StringExpression after minus button tapped without error = \(stringExpression)")
     }
 
-    func addDivideOperator() {
-        appending(op: "/")
+    func addDivideOperator() throws {
+        try appendingOperator(ope: " / ")
+        print("StringExpression after divide button tapped without error = \(stringExpression)")
     }
 
-    func addMultiplierOperator() {
-        appending(op: "*")
+    func addMultiplierOperator() throws {
+        try appendingOperator(ope: " * ")
+        print("StringExpression after multiplier button tapped without error = \(stringExpression)")
     }
 
-    func appending(op: String) {
-        firstCalculation = false
-        //This "if" is for appending an operator to the previous result still on the screen and do a calculation with it.
-        if calculateFinished {
-            calculateFinished = false // To be in the same conf as if addNewNumber func is called.(starting point).
-            stringExpression.append(finalResult)
-            stringExpression.append(op)
-            // NumberDisplay is set to "" by calculate func.
-            finalResult = "" //Last result is still in finalResult property.It must be cleared.
-            
-            // The "else" is the "normal" use. Appending an operator after calling addNewNumber func.The screen is reset in VC and newNumber and operator are displayed.
+    func appendingOperator(ope: String) throws {
+        calculateFinished = false
+        if canAddOperator {
+            stringExpression.insert(finalResult, at: 0)// Allow to use the result for a calculation
+            stringExpression.append(ope)
         } else {
-            stringExpression.append(numberDisplay)
-            stringExpression.append(op)
-            numberDisplay = "" //This func added an operator, numberDisplay is now ready for another number tapped.
-            finalResult = ""
+            throw ErrorCases.cannotAddOperator
         }
     }
 
-    func calculate() -> Bool {
-        stringExpression.append(numberDisplay) //The last number on screen must be added to stringExpression array
+    func calculate() throws -> String {
+        guard expressionIsCorrect else {
+            throw ErrorCases.expressionIncorrect }
+        guard expressionHaveEnoughElement else {
+            throw ErrorCases.notEnoughElements
+        }
+        //Concatenation of the individual elements in one string
+        let joinedExpression = stringExpression.joined()
+        print("JoinedExpression = \(joinedExpression)")
+        //Separation by string-elements in array where a space is found (like: " + ").
+        var elements = joinedExpression.split(separator: " ").map { "\($0)"}
+        print("Elements = \(elements)")
 
         // This loop iterates over stringExpression-array while a / or * operand still here
-        for (i,oprator) in stringExpression.enumerated() {
+        for (i,oprator) in elements.enumerated() {
+
             if oprator == "/" || oprator == "*" {
 
                 let leftIndex = i - 1
                 let rightIndex = i + 1
 
-                let left = Int(stringExpression[leftIndex])!
-                let operand = stringExpression[i]
-                let right = Int(stringExpression[rightIndex])!
+                let left = Int(elements[leftIndex])!
+                let operand = elements[i]
+                let right = Int(elements[rightIndex])!
 
                 let result: Int
                 switch operand {
-                //Check divide by 0.If true, clear func is called (reset all for a new calculation), VC display error msg
+                //Check divide by 0.
                 case "/": if right == 0 {
                     clear()
-                    return true
+                    throw ErrorCases.zeroDivisor
                 } else {
                     result = left / right
                     }
@@ -84,20 +108,22 @@ class Brain {
                 default: fatalError("Unknown operator !")
 
                 }
-                stringExpression[i+1] = "\(result)"
-                stringExpression[i] = ""
-                stringExpression[i-1] = ""
+                elements[i+1] = "\(result)"
+                elements[i] = "" // C'est pourquoi il y a: elements.removeAll(where: { $0 == "" }) mais peut-on faire autrement?
+                elements[i-1] = "" // C'est pourquoi il y a: elements.removeAll(where: { $0 == "" })
             }
         }
+
         // Drop out all empty string: ""
-        stringExpression.removeAll(where: { $0 == "" })
+        elements.removeAll(where: { $0 == "" })
+        print("Elements after calculation with * and / = \(elements)")
 
         // This loop iterates over stringExpression-array while a + or - operand still here
-        while stringExpression.count > 1 {
+        while elements.count > 1 {
 
-            let left = Int(stringExpression[0])!
-            let operand = stringExpression[1]
-            let right = Int(stringExpression[2])!
+            let left = Int(elements[0])!
+            let operand = elements[1]
+            let right = Int(elements[2])!
 
             let result: Int
 
@@ -106,23 +132,23 @@ class Brain {
             case "-": result = left - right
             default: fatalError("Unknown operator !")
             }
-            stringExpression = Array(stringExpression.dropFirst(3))
-            stringExpression.insert("\(result)", at: 0)
+            elements = Array(elements.dropFirst(3))
+            elements.insert("\(result)", at: 0)
         }
-
-        finalResult = stringExpression[0]
-        stringExpression = [""]
+        finalResult = elements[0]
         calculateFinished = true
-        numberDisplay = ""
+        stringExpression = [String]()
+        print("Final result = \(finalResult)")
+        print("StringExpression = \(stringExpression)")
 
-        return false
+        return finalResult
     }
 
     func clear() {
-        stringExpression = [""]
+        stringExpression = [String]()
         calculateFinished = true
-        numberDisplay = ""
         finalResult = "0"
     }
-    // End of class:
+
 }
+

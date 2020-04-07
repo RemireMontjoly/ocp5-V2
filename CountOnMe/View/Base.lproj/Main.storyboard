@@ -12,10 +12,6 @@
         <scene sceneID="BSq-PH-znu">
             <objects>
                 <viewController id="eqK-jh-KKu" customClass="ViewController" customModule="CountOnMe" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="tQO-Y2-VWE"/>
-                        <viewControllerLayoutGuide type="bottom" id="Fhl-dE-gDl"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="eIh-hr-C95">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -231,18 +227,18 @@
                         </subviews>
                         <color key="backgroundColor" red="0.87536688539999996" green="0.84808511389999996" blue="0.83804947389999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="T2H-yn-nBB" firstAttribute="leading" secondItem="AWJ-Vl-uau" secondAttribute="leading" constant="16" id="ABt-b7-a6a"/>
-                            <constraint firstItem="AWJ-Vl-uau" firstAttribute="trailing" secondItem="T2H-yn-nBB" secondAttribute="trailing" constant="16" id="BzL-tM-AvS"/>
+                            <constraint firstItem="T2H-yn-nBB" firstAttribute="leading" secondItem="VlO-nF-Ihj" secondAttribute="leading" constant="16" id="ABt-b7-a6a"/>
+                            <constraint firstItem="VlO-nF-Ihj" firstAttribute="trailing" secondItem="T2H-yn-nBB" secondAttribute="trailing" constant="16" id="BzL-tM-AvS"/>
                             <constraint firstItem="ogr-Aw-e1h" firstAttribute="leading" secondItem="isI-Gg-Iye" secondAttribute="trailing" constant="20" id="Guc-Zr-bMk"/>
-                            <constraint firstItem="isI-Gg-Iye" firstAttribute="leading" secondItem="AWJ-Vl-uau" secondAttribute="leading" constant="20" id="Iet-rV-FFD"/>
+                            <constraint firstItem="isI-Gg-Iye" firstAttribute="leading" secondItem="VlO-nF-Ihj" secondAttribute="leading" constant="20" id="Iet-rV-FFD"/>
                             <constraint firstItem="ogr-Aw-e1h" firstAttribute="top" secondItem="T2H-yn-nBB" secondAttribute="bottom" constant="8" id="eho-eL-AEe"/>
                             <constraint firstItem="isI-Gg-Iye" firstAttribute="top" secondItem="T2H-yn-nBB" secondAttribute="bottom" constant="20" id="g0B-yz-w45"/>
-                            <constraint firstItem="Fhl-dE-gDl" firstAttribute="top" secondItem="isI-Gg-Iye" secondAttribute="bottom" constant="20" id="gxg-ZR-TJO"/>
-                            <constraint firstItem="AWJ-Vl-uau" firstAttribute="trailing" secondItem="ogr-Aw-e1h" secondAttribute="trailing" constant="20" id="rjo-EP-Sfg"/>
-                            <constraint firstItem="Fhl-dE-gDl" firstAttribute="top" secondItem="ogr-Aw-e1h" secondAttribute="bottom" constant="20" id="sWv-xS-4vo"/>
-                            <constraint firstItem="T2H-yn-nBB" firstAttribute="top" secondItem="tQO-Y2-VWE" secondAttribute="bottom" constant="20" id="xTN-uc-VLG"/>
+                            <constraint firstItem="VlO-nF-Ihj" firstAttribute="bottom" secondItem="isI-Gg-Iye" secondAttribute="bottom" constant="20" id="gxg-ZR-TJO"/>
+                            <constraint firstItem="VlO-nF-Ihj" firstAttribute="trailing" secondItem="ogr-Aw-e1h" secondAttribute="trailing" constant="20" id="rjo-EP-Sfg"/>
+                            <constraint firstItem="VlO-nF-Ihj" firstAttribute="bottom" secondItem="ogr-Aw-e1h" secondAttribute="bottom" constant="20" id="sWv-xS-4vo"/>
+                            <constraint firstItem="T2H-yn-nBB" firstAttribute="top" secondItem="VlO-nF-Ihj" secondAttribute="top" constant="20" id="xTN-uc-VLG"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="AWJ-Vl-uau"/>
+                        <viewLayoutGuide key="safeArea" id="VlO-nF-Ihj"/>
                     </view>
                     <connections>
                         <outlet property="textView" destination="T2H-yn-nBB" id="yqe-Yo-Sag"/>
@@ -260,7 +256,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7XP-3c-sJZ" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="85.599999999999994" y="219.94002998500753"/>
+            <point key="canvasLocation" x="-369" y="210"/>
         </scene>
     </scenes>
 </document>
