@@ -91,11 +91,11 @@ class Brain {
                 let leftIndex = i - 1
                 let rightIndex = i + 1
 
-                let left = Int(elements[leftIndex])!
+                let left = Double(elements[leftIndex])!
                 let operand = elements[i]
-                let right = Int(elements[rightIndex])!
+                let right = Double(elements[rightIndex])!
 
-                let result: Int
+                let result: Double
                 switch operand {
                 //Check divide by 0.
                 case "/": if right == 0 {
@@ -121,11 +121,11 @@ class Brain {
         // This loop iterates over stringExpression-array while a + or - operand still here
         while elements.count > 1 {
 
-            let left = Int(elements[0])!
+            let left = Double(elements[0])!
             let operand = elements[1]
-            let right = Int(elements[2])!
+            let right = Double(elements[2])!
 
-            let result: Int
+            let result: Double
 
             switch operand {
             case "+": result = left + right
