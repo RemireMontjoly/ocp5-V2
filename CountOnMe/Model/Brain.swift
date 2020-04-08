@@ -62,9 +62,11 @@ class Brain {
 
     func appendingOperator(ope: String) throws {
         calculateFinished = false
-        if canAddOperator {
+        if canAddOperator, stringExpression.isEmpty {
             stringExpression.insert(finalResult, at: 0)// Allow to use the result for a calculation
             stringExpression.append(ope)
+        } else if canAddOperator {
+             stringExpression.append(ope)
         } else {
             throw ErrorCases.cannotAddOperator
         }
@@ -91,11 +93,11 @@ class Brain {
                 let leftIndex = i - 1
                 let rightIndex = i + 1
 
-                let left = Double(elements[leftIndex])!
+                let left = Int(elements[leftIndex])!
                 let operand = elements[i]
-                let right = Double(elements[rightIndex])!
+                let right = Int(elements[rightIndex])!
 
-                let result: Double
+                let result: Int
                 switch operand {
                 //Check divide by 0.
                 case "/": if right == 0 {
@@ -108,12 +110,11 @@ class Brain {
                 default: fatalError("Unknown operator !")
 
                 }
-                elements[i+1] = "\(result)"
+                elements[i+1] = "\(result)"//Because we are in a loop.We can'remove index, must put "" instead.
                 elements[i] = "" // C'est pourquoi il y a: elements.removeAll(where: { $0 == "" }) mais peut-on faire autrement?
                 elements[i-1] = "" // C'est pourquoi il y a: elements.removeAll(where: { $0 == "" })
             }
         }
-
         // Drop out all empty string: ""
         elements.removeAll(where: { $0 == "" })
         print("Elements after calculation with * and / = \(elements)")
@@ -121,11 +122,11 @@ class Brain {
         // This loop iterates over stringExpression-array while a + or - operand still here
         while elements.count > 1 {
 
-            let left = Double(elements[0])!
+            let left = Int(elements[0])!
             let operand = elements[1]
-            let right = Double(elements[2])!
+            let right = Int(elements[2])!
 
-            let result: Double
+            let result: Int
 
             switch operand {
             case "+": result = left + right
