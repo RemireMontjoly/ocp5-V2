@@ -9,8 +9,6 @@
 import XCTest
 @testable import CountOnMe
 
-// Question: On ne peut pas mettre d'arguments/ param dans les fonctions testées?????
-
 class BrainTestCase: XCTestCase {
 
     var brain: Brain!
@@ -36,11 +34,8 @@ class BrainTestCase: XCTestCase {
         testingHelper(ope: brain.addMultiplierOperator)
     }
 
-    // Une autre manière de l'écrire????????????????????????????
     func test_addDivideOperator() {
-        testingHelper {
-            try brain.addDivideOperator()
-        }
+        testingHelper(ope: brain.addDivideOperator)
     }
 
     //Helper methode for testing add-operators functions
@@ -60,7 +55,7 @@ class BrainTestCase: XCTestCase {
 
         if brain.canAddOperator == false {
             XCTAssertThrowsError(try ope()) { error in
-                XCTAssertEqual(error as! ErrorCases, ErrorCases.cannotAddOperator)
+                XCTAssertEqual(error as! BrainError, BrainError.cannotAddOperator)
             }
         }
     }
@@ -83,9 +78,7 @@ class BrainTestCase: XCTestCase {
         XCTAssertTrue(brain.finalResult == "0")
     }
 
-
-    func test_calculate() throws {
-        //First guard:
+    func testFirstGuardInCalculate() throws {
         //Given: expressionIsCorrect == false
         brain.stringExpression.append(" * ")
         if brain.expressionIsCorrect == false {
@@ -93,14 +86,15 @@ class BrainTestCase: XCTestCase {
             //When: calculate
             XCTAssertThrowsError(try brain.calculate()) {
                 error in
-                
+
                 //Then: error throws
-                XCTAssertTrue(error is ErrorCases)
-                XCTAssertEqual(error as! ErrorCases, ErrorCases.expressionIncorrect)
+                XCTAssertTrue(error is BrainError)
+                XCTAssertEqual(error as! BrainError, BrainError.expressionIncorrect)
             }
         }
+    }
 
-        //Second guard:
+    func testSecondGuardInCalculate() throws {
         //Given: expressionHaveEnoughElement == false
         brain.stringExpression = [String]()
         if brain.expressionHaveEnoughElement == false {
@@ -110,12 +104,13 @@ class BrainTestCase: XCTestCase {
                 error in
 
                 //Then: error throws
-                XCTAssertTrue(error is ErrorCases)
-                XCTAssertEqual(error as! ErrorCases, ErrorCases.notEnoughElements)
+                XCTAssertTrue(error is BrainError)
+                XCTAssertEqual(error as! BrainError, BrainError.notEnoughElements)
             }
         }
+    }
 
-        //Calculation:
+    func testCalculation() throws {
         //Given: starting point
         brain.clear()
 
@@ -133,8 +128,9 @@ class BrainTestCase: XCTestCase {
         //Then: result = 3
         _ = try brain.calculate()
         XCTAssertTrue(brain.finalResult == "3")
+    }
 
-        //Divide by 0:
+    func testDivideBy0() throws {
         //Given: the prior result is 3
 
         //When: divide by 0
@@ -144,8 +140,8 @@ class BrainTestCase: XCTestCase {
         //Then: throwing alert
         XCTAssertThrowsError(try brain.calculate()) {
             error in
-            XCTAssertTrue(error is ErrorCases)
-            XCTAssertEqual(error as! ErrorCases, ErrorCases.zeroDivisor)
+            XCTAssertTrue(error is BrainError)
+            XCTAssertEqual(error as! BrainError, BrainError.zeroDivisor)
         }
     }
 

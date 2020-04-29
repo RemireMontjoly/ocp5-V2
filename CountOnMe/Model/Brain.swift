@@ -6,8 +6,8 @@
 
 
 import Foundation
-
-enum ErrorCases: Error {
+// Brain error
+enum BrainError: Error {
     case zeroDivisor
     case cannotAddOperator
     case expressionIncorrect
@@ -65,17 +65,17 @@ class Brain {
             stringExpression.insert(finalResult, at: 0)// Allow to use the result for a calculation
             stringExpression.append(ope)
         } else if canAddOperator {
-             stringExpression.append(ope)
+            stringExpression.append(ope)
         } else {
-            throw ErrorCases.cannotAddOperator
+            throw BrainError.cannotAddOperator
         }
     }
 
     func calculate() throws -> String {
         guard expressionIsCorrect else {
-            throw ErrorCases.expressionIncorrect }
+            throw BrainError.expressionIncorrect }
         guard expressionHaveEnoughElement else {
-            throw ErrorCases.notEnoughElements
+            throw BrainError.notEnoughElements
         }
         //Concatenation of the individual elements in one string
         let joinedExpression = stringExpression.joined()
@@ -84,7 +84,19 @@ class Brain {
         var elements = joinedExpression.split(separator: " ").map { "\($0)"}
         print("Elements = \(elements)")
 
-        // This loop iterates over stringExpression-array while a / or * operand still here
+        try divideAndMultiply(elements: &elements)
+        addAndSubtract(elements: &elements)
+
+        finalResult = elements[0]
+        calculateFinished = true
+        stringExpression = [String]()
+        print("Final result = \(finalResult)")
+        print("StringExpression = \(stringExpression)")
+
+        return finalResult
+    }
+
+    private func divideAndMultiply(elements: inout [String]) throws {
         for (i,oprator) in elements.enumerated() {
 
             if oprator == "/" || oprator == "*" {
@@ -101,7 +113,7 @@ class Brain {
                 //Check divide by 0.
                 case "/": if right == 0 {
                     clear()
-                    throw ErrorCases.zeroDivisor
+                    throw BrainError.zeroDivisor
                 } else {
                     result = left / right
                     }
@@ -109,16 +121,17 @@ class Brain {
                 default: fatalError("Unknown operator !")
 
                 }
-                elements[i+1] = "\(result)"//Because we are in a loop.We can'remove index, must put "" instead.
-                elements[i] = "" // C'est pourquoi il y a: elements.removeAll(where: { $0 == "" }) mais peut-on faire autrement?
-                elements[i-1] = "" // C'est pourquoi il y a: elements.removeAll(where: { $0 == "" })
+                elements[i+1] = "\(result)"
+                elements[i] = "" //Because we are in a loop.We can'remove index, must put "" instead.
+                elements[i-1] = ""
             }
         }
         // Drop out all empty string: ""
         elements.removeAll(where: { $0 == "" })
         print("Elements after calculation with * and / = \(elements)")
+    }
 
-        // This loop iterates over stringExpression-array while a + or - operand still here
+    private func addAndSubtract(elements: inout [String]) {
         while elements.count > 1 {
 
             let left = Int(elements[0])!
@@ -135,13 +148,6 @@ class Brain {
             elements = Array(elements.dropFirst(3))
             elements.insert("\(result)", at: 0)
         }
-        finalResult = elements[0]
-        calculateFinished = true
-        stringExpression = [String]()
-        print("Final result = \(finalResult)")
-        print("StringExpression = \(stringExpression)")
-
-        return finalResult
     }
 
     func clear() {
@@ -149,6 +155,7 @@ class Brain {
         calculateFinished = true
         finalResult = "0"
     }
-
+    
 }
+
 
